@@ -1,5 +1,4 @@
-## Tutorial de instalación
-# MaskON: Detección y uso correcto de mascarilla
+# [Tutorial de Instalación] MaskON: Detección y uso correcto de mascarilla
 
 Proyecto desarrollado por:
 * José Benavente,
@@ -22,7 +21,7 @@ Este tutorial tiene como objetivo permitir instalar de forma local todos los ele
     +-- dataset -> resultado del preprocesamiento del dataset
     +-- images -> imágenes a procesar del dataset
 +-- cuda (ignorado en git)
-+-- object_detection (ignorado)
++-- object_detection
 +-- templates
     +-- alarm.mp3
     +-- index.html
