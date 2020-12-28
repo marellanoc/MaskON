@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# project-specific ignore directories and files
+
+cuda/
+object_detection/
+training_resources/training/

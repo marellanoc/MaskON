@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images</folder>
+	<filename>01009_Mask_Mouth_Chin.jpg</filename>
+	<path>01009_Mask_Mouth_Chin.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1024</width>
+		<height>1024</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>mascarilla_mal_puesta</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>239</xmin>
+			<ymin>137</ymin>
+			<xmax>992</xmax>
+			<ymax>991</ymax>
+		</bndbox>
+	</object>
+</annotation>
