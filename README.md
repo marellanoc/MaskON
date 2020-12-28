@@ -18,7 +18,24 @@ Este tutorial tiene como objetivo permitir instalar de forma local todos los ele
 
 ### Prerrequisitos:
 
-* Docker 
+* Docker
+* Ambiente de conda con los siguientes paquetes instalados:
+    * OpenCV
+    * Tensorflow2
+    * Tensorboard
+    * playsound
+    * flask
+    
+    Es posible que algunas dependencias de los estos paquetes paquetes no sean provistas directamente por conda, en ese caso, instalarlas manualmente solo de ser requeridos. Algunas paquetes pueden ser:
+
+    * scipy
+    * absl-py
+    * tf-models-official
+    * tf-slim
+
+    NOTA: Si se usa un ambiente de conda, instalar estos paquetes con el gestor de paquetes de conda (conda install) y no con pip ya que puede generar problemas. Solo cuando se requiera instalar un paquete que NO EXISTE en alguno de los repositorios de conda, instalarlo con pip. 
+
+    
 
 ### Instalación:
 
