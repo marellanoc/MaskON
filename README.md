@@ -9,7 +9,7 @@ Proyecto desarrollado por:
 
 en el marco de la asignatura ELO328 Procesamiento Digital de Imágenes, Universidad Técnica Federico Santa María, 2020.
 
-[[[ **introducir acá breve introducción del proyecto** ]]]
+Una contribución para contener el aumento en el número de contagios por COVID-19 es contar con un mecanismo que ayude a detectar a las personas que no cumplen con las medidas sanitarias. Así es como surge el proyecto MaskON, el cual consiste en entrenar un detector que verifica de forma automática  el uso correcto de mascarilla en personas a tiempo real.
 
 Este tutorial tiene como objetivo permitir instalar de forma local todos los elementos necesarios para ejecutar el código contenido en este repositorio y poder poner a prueba su funcionamiento.
 
@@ -40,6 +40,7 @@ Este tutorial tiene como objetivo permitir instalar de forma local todos los ele
 
 * Docker
 * Ambiente de conda con los siguientes paquetes instalados:
+    * Python3
     * OpenCV
     * Tensorflow2
     * Tensorboard
@@ -53,9 +54,7 @@ Este tutorial tiene como objetivo permitir instalar de forma local todos los ele
     * tf-models-official
     * tf-slim
 
-    NOTA: Si se usa un ambiente de conda, instalar estos paquetes con el gestor de paquetes de conda (conda install) y no con pip ya que puede generar problemas. Solo cuando se requiera instalar un paquete que NO EXISTE en alguno de los repositorios de conda, instalarlo con pip. 
-
-    
+    NOTA: Si se usa un ambiente de conda, instalar estos paquetes con el gestor de paquetes de conda (conda install) y no con pip ya que puede generar problemas. Solo cuando se requiera instalar un paquete que NO EXISTE en alguno de los repositorios de conda, instalarlo con pip.
 
 ### Instalación:
 
@@ -121,7 +120,6 @@ o desde fuera de la carpeta del repositorio con
 Esto levantará un servidor local en 
 
 http://localhost:5000 con la aplicación final del proyecto.
-
 
 ## Análisis de la red neuronal
 
