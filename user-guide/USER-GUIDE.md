@@ -1,4 +1,4 @@
-# README.MD
+# Manual de usuario
 Este manual de usuario fue creado con la finalidad de facilitar el uso del programa y orientar a nuevos usuarios que deseen saber con detalle como sacar el máximo pontencial del software.
 
 ## Manual de usuario
