@@ -1,4 +1,4 @@
-# [Tutorial de Instalación] MaskON: Detección y uso correcto de mascarilla
+# MaskON: Detección y uso correcto de mascarilla
 
 Proyecto desarrollado por:
 * José Benavente,
