@@ -79,7 +79,7 @@ def load_annotations(annotation_folder_path):
     xml_file_paths = glob.glob(path.join(annotation_folder_path, '*.xml'))
     examples = []
     for xml_file_path in xml_file_paths:
-        print(f'Loading data from {xml_file_path}')
+        print(f'Cargando los datos de {xml_file_path}')
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
         objects = root.findall('object')
@@ -103,7 +103,7 @@ def load_annotations(annotation_folder_path):
 
 
 def create_tf_example(example, images_folder_path, img_format):
-    print(f'Creating TFRecord of file:  {example.filename}')
+    print(f'Creando registro TFRecord del archivo:  {example.filename}')
     height = example.height  # Image height
     width = example.width  # Image width
     filename = example.filename.encode('utf8')  # Filename of the image. Empty if image is not from file
@@ -166,11 +166,10 @@ def create_tf_record_file(examples, images_folder_path, img_format, output_file_
 
 
 if __name__ == '__main__':
-    # ↓↓↓ INPUT PARAMETERS ↓↓↓
     annotation_folder_path = path.normpath(r"C:\Users\matia\Documents\Scripts\PDI\archive\annotations")
     images_folder_path = path.normpath(r"C:\Users\matia\Documents\Scripts\PDI\archive\images")
-    output_folder_path = path.normpath(r"C:\Users\matia\Documents\Scripts\PDI\archive\dataset")
-    train_ratio = 0.8
+    output_folder_path = path.normpath(r"C:\Users\matia\Documents\Scripts\PDI\training_resources\dataset")
+    train_ratio = 0.6
     img_format = 'jpeg'  # png or jpeg
 
     examples = load_annotations(annotation_folder_path)
