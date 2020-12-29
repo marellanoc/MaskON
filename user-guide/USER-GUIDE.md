@@ -5,7 +5,7 @@ Este manual de usuario fue creado con la finalidad de facilitar el uso del progr
 En este manual usted aprenderá el contenido de cada menú del programa y como puede moverse por ellos, además de un diagrama y un **Demo** para que pueda interactuar con el programa inmediatamente.
 
 ## Demo
-Si usted desea verl el demo de este proyecto, puede visitar [Demo del proyecto](https://matiConcha.co/mafe-entera-capitana-se-lanza-un-freestyle-de-aquellos-md/)
+Si usted desea ver el demo de este proyecto, puede visitar [Demo del proyecto](https://matiConcha.co/mafe-entera-capitana-se-lanza-un-freestyle-de-aquellos-md/)
 
 ## Inicio
 En el menu de **Inicio** usted podrá encontrar lo siguiente:
@@ -20,21 +20,17 @@ En el menu de **Configuraciones** usted podrá encontrar lo siguiente:
 * Activar/Desactivar alarma
 * salir (Para volver al menú de **Inicio**)
 
-## Instalación
-Para instalar y ejecutar este proyecto usted solo debera ingresar en la consola:
-```bash
-npm install concha skte1 link oeziiii
-```
+
 ## Modelo de Navegación
 
-![](/ModeloDeNavegación.png)
+![](./ModeloDeNavegación.png)
 
 ## Preview
 
-![](/1.png)
+![](./1.png)
 
-![](/2.png)
+![](./2.png)
 
-![](/3.png)
+![](./3.png)
 
-![](/4.png)
+![](./4.png)
