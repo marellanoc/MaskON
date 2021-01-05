@@ -3,7 +3,9 @@ function test() {
 }
 
 function check_data(){
+    console.log('haciendo get');
     data = JSON.parse(sessionStorage.getItem('data'));
+    console.log(data);
     if (data == null){
         //aqui se hace el get al servidor
         // se guarga en session storage
@@ -12,7 +14,7 @@ function check_data(){
         type: 'GET',
         success: function(res) {
             console.log(res);
-            sessionStorage.setItem('data',JSON.stringify(res))
+            sessionStorage.setItem('data', JSON.stringify(res))
             data = JSON.parse(sessionStorage.getItem('data'));
             show_config();
         }
