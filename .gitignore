@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # project-specific ignore directories and files
-
 cuda/
+cuda8/
 training_resources/training/
 training_resources/dataset/

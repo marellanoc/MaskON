@@ -1,4 +1,7 @@
 #packages for mask detection
+
+# Stream video
+
 import numpy as np
 from cv2 import cv2
 import tensorflow as tf
@@ -8,8 +11,27 @@ from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
 from playsound import playsound
 
-#packages for the web server
-from flask import Flask, render_template, Response
+# web server and socket
+from flask import Flask, render_template, request, jsonify, redirect
+from flask_socketio import SocketIO, emit
+from werkzeug.utils import secure_filename
+
+import json, os
+
+#  variables y settings
+
+data = dict()
+alarm_actual_state = False
+ALLOWED_EXTENSIONS = ['mp3']
+UPLOAD_FOLDER = os.path.join(os.path.abspath(os.getcwd()), 'static')
+UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER, 'alarms')
+
+app = Flask(__name__, template_folder='templates')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+socketio = SocketIO(app)
+
+
 
 def detect(image, detection_model):
     image, shapes = detection_model.preprocess(image)
@@ -84,10 +106,13 @@ def run(label_map_path, config_file_path, checkpoint_path):
             # si cualquiera de las personas frente a la cámara está usando mal la mascarilla o no tiene, marcar recuadro rojo
             if any(c == 1 or c == 3 for c in detection_classes):
                 bb_color = 'green' #rojo
+                # envia mensaje al socket avisando a la alarma para que se encienda
+                emit('alarm', {'alarm': 1}, namespace='/', broadcast=True)
             # sino, todo ok, verde
             else:
                 bb_color = 'blue' #verde
-            
+                # envia mensaje al socket avisando a la alarma que se apague en caso de estar sonando
+                emit('alarm', {'alarm': 0}, namespace='/', broadcast=True)
             viz_utils.draw_bounding_box_on_image_array(
                 image_np_with_detections,
                 0, 0, 1, 1, 
@@ -97,8 +122,8 @@ def run(label_map_path, config_file_path, checkpoint_path):
         print(detection_boxes, detection_classes, detection_scores)
         print((detection_classes + label_id_offset).astype(int))
         
-        if any(c == 1 or c == 3 for c in detection_classes):
-           playsound('templates/alarm.mp3')
+        #if any(c == 1 or c == 3 for c in detection_classes):
+        #   playsound('templates/alarm.mp3')
 
         frame = cv2.resize(image_np_with_detections, (800, 600))
 
@@ -118,8 +143,7 @@ def run(label_map_path, config_file_path, checkpoint_path):
     cap.release()
     cv2.destroyAllWindows()
 
-#mounting web server TODO: Searar en un módulo aparte.
-app = Flask(__name__)
+# RUTAS
 
 @app.route('/')
 def index():
@@ -134,10 +158,68 @@ def video_feed():
                         checkpoint_path=PATH_TO_CHECKPOINT),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
+@app.route('/')
+def old_index():
+    return redirect("home", code=303)
+
+
+@app.route('/home')
+def index():
+    resp = render_template("template.html")
+    return resp
+
+
+@app.route('/settings')
+def settings():
+    resp = render_template("settings.html")
+    return resp
+
+
+@app.route('/test')
+def test():
+    print("hello")
+    return "nothing"
+
+
+@app.route('/get_config')
+def get_settings():
+    return jsonify(data)
+
+
+@app.route('/post_config', methods=['POST'])
+def post_settings():
+    global data
+
+    if request.method == 'POST':
+        data = request.get_json()
+
+        with open('config.json', 'w') as fp:
+            json.dump(data, fp)
+
+    return '200'
+
+
+@app.route('/post_file', methods=['POST'])
+def post_file():
+    f = request.files['file']
+    print(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
+    f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
+
+    return '200'
+
+
+@socketio.on('alarm_change')
+def alarm_event(json):
+    print(json)
+    emit('my response', json, broadcast=True)
+
+
 if __name__ == '__main__':
-    PATH_TO_LABELMAP = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\dataset\label_map.pbtxt"
-    PATH_TO_CONFIG = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\pipeline.config"
-    PATH_TO_CHECKPOINT = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\003\ckpt-16"
+    PATH_TO_LABELMAP = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\001\label_map.pbtxt"
+    PATH_TO_CONFIG = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\001\pipeline.config"
+    PATH_TO_CHECKPOINT = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\001\ckpt-17"
 
     #run(label_map_path=PATH_TO_LABELMAP, config_file_path=PATH_TO_CONFIG, checkpoint_path=PATH_TO_CHECKPOINT)
-    app.run(host='127.0.0.1',port='5000', debug=True)
+    #app.run(host='127.0.0.1',port='5000', debug=True)
+    socketio.run(app)
