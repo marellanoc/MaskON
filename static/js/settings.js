@@ -10,17 +10,17 @@ function check_data(){
         //aqui se hace el get al servidor
         // se guarga en session storage
         $.ajax({
-        url: "/get_config",
-        type: 'GET',
-        success: function(res) {
-            console.log(res);
-            sessionStorage.setItem('data', JSON.stringify(res))
-            data = JSON.parse(sessionStorage.getItem('data'));
-            show_config();
-        }
-    });
+            url: "/get_config",
+            type: 'GET',
+            success: function(res) {
+                console.log(res);
+                sessionStorage.setItem('data', JSON.stringify(res))
+                data = JSON.parse(sessionStorage.getItem('data'));
+                show_config();
+            }
+        });
     }
-    else{
+    else {
         show_config()
     }
 }
@@ -48,7 +48,7 @@ function change_state() {
 }
 
 function post_data(){
-    sessionStorage.setItem('data',JSON.stringify(data))
+    sessionStorage.setItem('data', JSON.stringify(data))
     $.ajax({
         url: "/post_config",
         type: 'POST',
@@ -74,7 +74,6 @@ function populate_tones(){
     $('[name=options] option').filter(function() {
             return ($(this).text() == data['tono_alarma']); //To select Blue
         }).prop('selected', true);
-
 }
 
 
@@ -94,8 +93,6 @@ function hide_loading(){
         $( "#song_select" ).prop( "disabled", false );
         post_data();
     }, 3000);
-
-
 }
 
 

@@ -6,7 +6,7 @@ from object_detection.utils import label_map_util
 from object_detection.utils import config_util
 from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
-from playsound import playsound
+import pygame
 
 # web server and socket
 from flask import Flask, render_template, request, jsonify, redirect, Response
@@ -16,6 +16,9 @@ from werkzeug.utils import secure_filename
 import json, os
 
 #  variables y settings
+pygame.init()
+pygame.mixer.init()
+
 data = dict()
 with open('config.json') as json_file:
     data = json.load(json_file)
@@ -59,7 +62,7 @@ def run(label_map_path, config_file_path, checkpoint_path):
 
     videoStreamAddress = "http://192.168.1.102:4747/video"
 
-    cap = cv2.VideoCapture(videoStreamAddress) #esto básicamente
+    cap = cv2.VideoCapture(videoStreamAddress)
     
     while True:
         # Read frame from camera
@@ -102,15 +105,24 @@ def run(label_map_path, config_file_path, checkpoint_path):
 
             # si cualquiera de las personas frente a la cámara está usando mal la mascarilla o no tiene, marcar recuadro rojo
             if any(c == 0 or c == 2 for c in detection_classes):
+                
+                if data["estado_alarma"] == 1:
+                    try:
+                        sound = pygame.mixer.Sound('static/alarms/'+ data['tono_alarma'] +'.mp3')
+                        sound.set_volume(float(data["volumen_alarma"])/100.0)
+                        sound.play()
+                    except Exception as error:
+                        print(error)
+
                 border_color = 'blue' #rojo (bug de TF)
                 with app.app_context():
-                    emit('alarm', {'alarm': 1}, namespace='/', broadcast=True)
+                    socketio.emit('alarm', {'alarm': 1}, namespace='/', broadcast=True)
 
             # sino, todo ok, verde
             else:
                 border_color = 'green' #verde
                 with app.app_context():
-                    emit('alarm', {'alarm': 0}, namespace='/', broadcast=True)
+                    socketio.emit('alarm', {'alarm': 0}, namespace='/', broadcast=True)
             
             viz_utils.draw_bounding_box_on_image_array(
                 image_np_with_detections,
@@ -136,10 +148,10 @@ def run(label_map_path, config_file_path, checkpoint_path):
 @app.route('/cam')
 def cam():
     return Response(run(
-                        label_map_path=PATH_TO_LABELMAP,
-                        config_file_path=PATH_TO_CONFIG,
-                        checkpoint_path=PATH_TO_CHECKPOINT),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+            label_map_path=PATH_TO_LABELMAP,
+            config_file_path=PATH_TO_CONFIG,
+            checkpoint_path=PATH_TO_CHECKPOINT),
+        mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/')
 def root():
@@ -153,9 +165,7 @@ def index():
 @app.route('/settings')
 def settings():
     resp = render_template("settings.html")
-    shutdown = True
     return resp
-
 
 @app.route('/get_config')
 def get_settings():
@@ -177,10 +187,16 @@ def post_file():
     f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
     return '200'
 
-@socketio.on('alarm_change')
+@app.route('/test<n>')
+def test(n):
+    socketio.emit('alarm', {'alarm': n}, namespace='/', broadcast=True)
+    return "hola"
+
+@socketio.on('alarm_change', namespace='/')
 def alarm_event(json):
     print(json)
-    emit('my response', json, broadcast=True)
+    socketio.emit('my response', json, namespace='/', broadcast=True)
+
 
 if __name__ == '__main__':
     PATH_TO_LABELMAP = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\001\label_map.pbtxt"

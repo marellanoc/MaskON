@@ -42,13 +42,13 @@
 		<div style="padding-top: 100px; color:white">
 			<h1>MaskON: Uso correcto de mascarilla</h1>
 		</div>
-		<div id="video_stream"  ><img id="bg" src="{{ url_for('cam') }}"></div>
+		<div id="video_stream"><img id="bg" src="{{ url_for('cam') }}"></div>
 	</div>
 </body>
 <footer class="container">
 	<div class="row">
 		<div class="col-1"></div>
-		<div class="col-2"><button type="button" class="btn btn-primary" id="mute_button" onclick="mute_alarm()">Silenciar alarma</button></div>
+		<div class="col-2"><button type="button" class="btn btn-primary" id="mute_button" onclick="mute_alarm()">Silenciar</button></div>
 		<div class="col-6"></div>
 		<div class="col-2"><button type="button" class="btn btn-primary" onclick="location.href=&quot;{{ url_for('settings') }}&quot;">Configuraciones</button></div>
 		<div class="col-1"></div>
