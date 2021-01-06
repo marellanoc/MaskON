@@ -6,19 +6,24 @@ from object_detection.utils import label_map_util
 from object_detection.utils import config_util
 from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
-import pygame
+
+# activate eventlet
+import eventlet
+eventlet.monkey_patch()
 
 # web server and socket
+import threading
 from flask import Flask, render_template, request, jsonify, redirect, Response
 from flask_socketio import SocketIO, emit
 from werkzeug.utils import secure_filename
-
 import json, os
+import pygame
 
 #  variables y settings
 pygame.init()
 pygame.mixer.init()
 
+loop = True
 data = dict()
 with open('config.json') as json_file:
     data = json.load(json_file)
@@ -30,7 +35,7 @@ UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER, 'alarms')
 app = Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-socketio = SocketIO(app)
+socketio = SocketIO(app, debug=True, async_mode="eventlet")
 
 #methods
 def detect(image, detection_model):
@@ -41,7 +46,7 @@ def detect(image, detection_model):
     return detections, prediction_dict, tf.reshape(shapes, [-1])
 
 def run(label_map_path, config_file_path, checkpoint_path):
-    global app
+    global app, loop
 
     # Enable GPU dynamic memory allocation
     gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -64,7 +69,7 @@ def run(label_map_path, config_file_path, checkpoint_path):
 
     cap = cv2.VideoCapture(videoStreamAddress)
     
-    while True:
+    while loop:
         # Read frame from camera
         ret, image_np = cap.read()
 
@@ -154,22 +159,21 @@ def cam():
         mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/')
-def root():
-    return redirect("index", code=303)
-
-@app.route('/index')
 def index():
     resp = render_template("index.html")
     return resp
 
 @app.route('/settings')
 def settings():
+    global loop
+    loop = False
     resp = render_template("settings.html")
     return resp
 
 @app.route('/get_config')
 def get_settings():
     return jsonify(data)
+
 
 @app.route('/post_config', methods=['POST'])
 def post_settings():
