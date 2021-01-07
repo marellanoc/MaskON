@@ -1,4 +1,7 @@
 #packages for mask detection
+
+# Stream video
+
 import numpy as np
 from cv2 import cv2
 import tensorflow as tf
@@ -7,19 +10,21 @@ from object_detection.utils import config_util
 from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
 
+
 # web server and socket
-from flask import Flask, render_template, request, jsonify, redirect, Response
+import requests
+from flask import Flask, render_template, request, jsonify, redirect,Response
 from flask_socketio import SocketIO, emit
 from werkzeug.utils import secure_filename
 
 import json, os
-import requests
+
+#  variables y settings
+
 
 app = Flask(__name__, template_folder='templates')
+URL = "/test" #poner url de test<n>
 
-URL = "http://localhost:5000/test" #poner url de test<n>
-
-#methods
 def detect(image, detection_model):
     image, shapes = detection_model.preprocess(image)
     prediction_dict = detection_model.predict(image, shapes)
@@ -27,16 +32,11 @@ def detect(image, detection_model):
 
     return detections, prediction_dict, tf.reshape(shapes, [-1])
 
-def run():
-    global app, loop
 
-    label_map_path = PATH_TO_LABELMAP
-    config_file_path = PATH_TO_CONFIG
-    checkpoint_path = PATH_TO_CHECKPOINT
+def run(label_map_path, config_file_path, checkpoint_path):
 
     # Enable GPU dynamic memory allocation
     gpus = tf.config.experimental.list_physical_devices('GPU')
-
     for gpu in gpus:
         tf.config.experimental.set_memory_growth(gpu, True)
 
@@ -51,9 +51,9 @@ def run():
 
     category_index = label_map_util.create_category_index_from_labelmap(label_map_path, use_display_name=True)
 
-    videoStreamAddress = "http://192.168.1.102:4747/video"
+    videoStreamAddress = "http://192.168.1.82:4747/video"
 
-    cap = cv2.VideoCapture(videoStreamAddress)
+    cap = cv2.VideoCapture(videoStreamAddress) #esto básicamente
     
     while True:
         # Read frame from camera
@@ -79,7 +79,7 @@ def run():
 
         label_id_offset = 1
         image_np_with_detections = image_np.copy()
-        border_color = 'green'
+        bb_color = 'green'
 
         if indexes.shape != 0:
             viz_utils.visualize_boxes_and_labels_on_image_array(
@@ -95,55 +95,66 @@ def run():
                 semaphore_mode=True)
 
             # si cualquiera de las personas frente a la cámara está usando mal la mascarilla o no tiene, marcar recuadro rojo
-            if any(c == 0 or c == 2 for c in detection_classes):
-                
-                # if data["estado_alarma"] == 1:
-                #     try:
-                #         sound = pygame.mixer.Sound('static/alarms/'+ data['tono_alarma'] +'.mp3')
-                #         sound.set_volume(float(data["volumen_alarma"])/100.0)
-                #         sound.play()
-                #     except Exception as error:
-                #         print(error)
+            if any(c == 1 or c == 3 for c in detection_classes):
+                bb_color = 'green' #rojo
+                # envia mensaje al socket avisando a la alarma para que se encienda
+                #emit('alarm', {'alarm': 1}, namespace='/', broadcast=True)
+                r = requests.get(url= URL + '1')
 
-                r = requests.get(url=URL + '1')
-                border_color = 'blue' #rojo (bug de TF)
-                
-            # sino, todo ok, verde
+                # sino, todo ok, verde
             else:
+                bb_color = 'blue' #verde
+                # envia mensaje al socket avisando a la alarma que se apague en caso de estar sonando
+                #emit('alarm', {'alarm': 0}, namespace='/', broadcast=True)
                 r = requests.get(url=URL + '0')
-                border_color = 'green' #verde
-                
-            
+
             viz_utils.draw_bounding_box_on_image_array(
                 image_np_with_detections,
                 0, 0, 1, 1, 
-                color = border_color,
+                color = bb_color,
                 thickness = 20)
 
+        print(detection_boxes, detection_classes, detection_scores)
+        print((detection_classes + label_id_offset).astype(int))
+        
+
+
         frame = cv2.resize(image_np_with_detections, (800, 600))
+
+        # Display output
+        #cv2.imshow('MaskON: Uso correcto de mascarilla', cv2.resize(image_np_with_detections, (800, 600)))
+        # encode OpenCV raw frame to jpg and displaying it
         
         ret, jpeg = cv2.imencode('.jpg', frame)
         frame_encoded_jpeg = jpeg.tobytes()
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_encoded_jpeg + b'\r\n\r\n')
-        
-        # if cv2.waitKey(25) & 0xFF == ord('q'):
-        #     break
+    
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            break
 
     cap.release()
     cv2.destroyAllWindows()
 
 # RUTAS
-@app.route('/cam')
-def cam():
-    #async_run = pool.apply_async(run)
-    return Response(run(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(
+        run(
+            label_map_path=PATH_TO_LABELMAP,
+            config_file_path=PATH_TO_CONFIG,
+            checkpoint_path=PATH_TO_CHECKPOINT
+        ),
+        mimetype='multipart/x-mixed-replace; boundary=frame'
+    )
+
 
 if __name__ == '__main__':
     PATH_TO_LABELMAP = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\001\label_map.pbtxt"
-    PATH_TO_CONFIG = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\pipeline.config"
-    PATH_TO_CHECKPOINT = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\001\ckpt-16"
+    PATH_TO_CONFIG = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\001\pipeline.config"
+    PATH_TO_CHECKPOINT = r"C:\Users\matia\Documents\Scripts\PDI\training_resources\training\001\ckpt-17"
 
-    #app.run(host='127.0.0.1',port='5000', debug=True)
-    app.run(port=8000, debug=True)
+    app.run(port='8000')
