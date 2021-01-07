@@ -7,15 +7,11 @@ from object_detection.utils import config_util
 from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
 
-# activate eventlet
-import eventlet
-eventlet.monkey_patch()
-
 # web server and socket
-import threading
 from flask import Flask, render_template, request, jsonify, redirect, Response
 from flask_socketio import SocketIO, emit
 from werkzeug.utils import secure_filename
+from multiprocessing.pool import ThreadPool
 import json, os
 import pygame
 
@@ -23,6 +19,7 @@ import pygame
 pygame.init()
 pygame.mixer.init()
 
+pool = ThreadPool(processes=1)
 loop = True
 data = dict()
 with open('config.json') as json_file:
@@ -45,8 +42,12 @@ def detect(image, detection_model):
 
     return detections, prediction_dict, tf.reshape(shapes, [-1])
 
-def run(label_map_path, config_file_path, checkpoint_path):
+def run():
     global app, loop
+
+    label_map_path = PATH_TO_LABELMAP
+    config_file_path = PATH_TO_CONFIG
+    checkpoint_path = PATH_TO_CHECKPOINT
 
     # Enable GPU dynamic memory allocation
     gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -152,11 +153,8 @@ def run(label_map_path, config_file_path, checkpoint_path):
 # RUTAS
 @app.route('/cam')
 def cam():
-    return Response(run(
-            label_map_path=PATH_TO_LABELMAP,
-            config_file_path=PATH_TO_CONFIG,
-            checkpoint_path=PATH_TO_CHECKPOINT),
-        mimetype='multipart/x-mixed-replace; boundary=frame')
+    async_run = pool.apply_async(run)
+    return Response(async_run.get(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/')
 def index():
@@ -165,6 +163,7 @@ def index():
 
 @app.route('/settings')
 def settings():
+    print('hola estoy intentando com oweon entrar a settings')
     global loop
     loop = False
     resp = render_template("settings.html")
