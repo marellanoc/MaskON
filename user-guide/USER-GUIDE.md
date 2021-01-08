@@ -6,15 +6,15 @@ Si usted desea ver el demo de este proyecto, puede visitar [Demo del proyecto](h
 
 ## Inicio
 Posterior a la ejecución del programa, usted posee el menú de **Inicio** donde podrá encontrar lo siguiente:
-* Silenciar alarma
-* Cámaras de video
-* Configuraciones 
+* Silenciar alarma: Silencia la alarma.
+* Cámaras de video: Muestra imagenes a tiempo real del contenido captado por la cámara.
+* Configuraciones: Pestaña para hacer diferentes cambios. 
 
 ## Menu Configuraciones
 En el menú de **Configuraciones** usted podrá encontrar lo siguiente:
-* Volumen alarma
-* Tono de alarma
-* Activar/Desactivar alarma
+* Volumen alarma: Al presionar el botón, aparecera una barra para regular el volumen, al moverla a la derecha se aumenta el volumen y a la izquierda disminuye el volumen.
+* Tono de alarma: Al presionar el botón usted podra cambiar el tono de la alarma por alguno que desee, pudiendo cargar archivos desde el computador.
+* Activar/Desactivar alarma: Silencia o Activa la alarma.
 * salir (Para volver al menú de **Inicio**)
 
 
