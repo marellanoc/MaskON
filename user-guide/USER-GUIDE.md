@@ -15,7 +15,7 @@ En el menú de **Configuraciones** usted podrá encontrar lo siguiente:
 * Volumen alarma: Al presionar el botón, aparecera una barra para regular el volumen, al moverla a la derecha se aumenta el volumen y a la izquierda disminuye el volumen.
 * Tono de alarma: Al presionar el botón usted podra cambiar el tono de la alarma por alguno que desee, pudiendo cargar archivos desde el computador.
 * Activar/Desactivar alarma: Silencia o Activa la alarma.
-* salir (Para volver al menú de **Inicio**)
+* Salir (Para volver al menú de **Inicio**)
 
 
 ## Modelo de Navegación
