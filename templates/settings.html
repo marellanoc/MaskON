@@ -10,16 +10,16 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
 	<script type="text/javascript" charset="utf-8">
-		var new_audio;
-    	var socket = io();
+		var new_audio; //variable que almacena el audio 
+    	var socket = io(); //socket que se conecta al socket en el servidor flask
 
-    	socket.on('connect', function() {
+    	socket.on('connect', function() { //funcion que al momento de conectarse con el servidor, envia un mensaje
 			socket.emit('alarm_change', {data: 'I\'m connected from settings!'});
-			console.log('Enviado')
+			console.log('Conectado al servidor!') //muestra por consola un mensaje avisando que se conectó al servidor
     	});
 	</script>
 
-	<title>hola!</title>
+	<title>MaskON: Uso correcto de mascarilla</title>
 </head>
 <body style="background-color:darkblue" onload="check_data()">
 	<div style="padding-top: 50px"></div>
@@ -149,16 +149,18 @@
 </body>
 
 <script>
-	$('#volume_modal').on('shown.bs.modal', function () {
-		//document.getElementById("volume_range").value = data['volume'];
+	// al abrir el modal de volumen, cambia el texto del componente range y su valor
+	$('#volume_modal').on('shown.bs.modal', function () { 
 		$('#volume_range').val(data['volumen_alarma'])
 		$('#slider_value').html( data['volumen_alarma']);
 	})
 
+	// al mover el cuadrado del range, actualiza el valor mostrado
 	$(document).on('input', '#volume_range', function() {
     	$('#slider_value').html( $(this).val() );
 	});
 
+	//al momento de guardar los cambios de volumen, se ciera el modal y se guarda la configuracion en el servidor
 	$('#save_volume').on('click', function() {
 		data['volumen_alarma'] = $('#volume_range').val();
 		$('#volume').html( data['volumen_alarma']);
@@ -166,32 +168,33 @@
 	});
 
 
+	// bloque de codigo que manda el archivo al servidor
 	$('#upload-file-btn').on("click",function() {
-		if($("#file").val()==''){
-			if($( "#song_select" ).val()!=data['tono_alarma']){
+		if($("#file").val()==''){ //si no hay archivo seleccionado
+			if($( "#song_select" ).val()!=data['tono_alarma']){ //si el tono seleccionado es diferente del que esta configurado
 				let new_name = $( "#song_select" ).val().replace(/ /g,'_');
-				data['tono_alarma'] = new_name;
+				data['tono_alarma'] = new_name; //se guarda como el tono seleccionado
 
-				document.getElementById("tone").innerHTML = new_name;
-				post_data();
+				document.getElementById("tone").innerHTML = new_name; //se cambia el texto de tono escogido
+				post_data();//se guarda la configuracion en el servidor
 
 			}
-			document.getElementById("upload-file-btn").innerHTML = "Guardar cambios";
-			$('#close_song_modal').trigger('click');
+			document.getElementById("upload-file-btn").innerHTML = "Guardar cambios"; // dado que no se esta subiendo tonos, el boton debe decir "guardar cambios"
+			$('#close_song_modal').trigger('click'); //se cierra el modal
 		}
-		else{
-			upload_file();
+		else{ 
+			upload_file(); //si hay un archivo de tono seleccionado para subir, se llama a la funcion correspondiente
 		}
 	})
 
-	$('#tone_modal').on('shown.bs.modal', function () {
-		populate_tones();
+	$('#tone_modal').on('shown.bs.modal', function () { // una vez abierto el modal de seleccion de tono
+		populate_tones(); //se ejecuta la funcion que pobla el select
 	})
 
-	 $(document).on('change','#file' , function(){
-		 $( "#song_select" ).prop( "disabled", true );
-		 new_audio = $("#file").val().replace(/C:\\fakepath\\/i, '').replace('.mp3','').replace(/ /g,'_');
-		 document.getElementById("upload-file-btn").innerHTML = "Subir sonido";
+	 $(document).on('change','#file' , function(){ //este evento se desencadena al seleccionar un archivo
+		 $( "#song_select" ).prop( "disabled", true ); //se bloquea el select de canciones
+		 new_audio = $("#file").val().replace(/C:\\fakepath\\/i, '').replace('.mp3','').replace(/ /g,'_');//se reemplazan los espacios por guiones bajo en el nombre del archivo seleccionado
+		 document.getElementById("upload-file-btn").innerHTML = "Subir sonido"; //se cambia el nombre del boton de acuerdo al contexto
 	 });
 
 </script>
