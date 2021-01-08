@@ -5,7 +5,7 @@ Este manual de usuario fue creado con la finalidad de facilitar el uso del progr
 Si usted desea ver el demo de este proyecto, puede visitar [Demo del proyecto](https://drive.google.com/drive/folders/1Uqnloj1RgeDTE--mkgo7rjpL8jrsFSHX?usp=sharing)
 
 ## Inicio
-En el menú de **Inicio** usted podrá encontrar lo siguiente:
+Posterior a la ejecución del programa, usted posee el menú de **Inicio** donde podrá encontrar lo siguiente:
 * Silenciar alarma
 * Cámaras de video
 * Configuraciones 
