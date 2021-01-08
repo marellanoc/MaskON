@@ -5,59 +5,63 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-	<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+	<script src="{{url_for('static', filename='js/index.js')}}"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
 
+
 	<script>
-		check_data();
-		var socket = io();
-		var current_sound = 2;
+		var socket = io(); //variable que guarda el socket que se conecta al servidor
+		var current_sound = 2; //variable que indica si la alarma está sonando , se inicicializa con un valor cualquiera que no sea 0 o 1
 
-    	socket.on('connect', function() {
-			socket.emit('alarm_change', {data: 'I\'m connected from home!'});
+    	socket.on('connect', function() { // al momento de conectarse al socket se emite un mensaje para confirmar conexion
+			socket.emit('alarm_change', {data: 'I\'m connected from home!'});//se emite el mensaje por el socket
+			console.log('Enviado!')
     	});
 
-    	socket.on('alarm', function(data) {
-			if(data['alarm'] == 1 && data['alarm'] != current_sound){
-				console.log('alarmando')
-				current_sound = 1;
-				alarm()
+    	socket.on('alarm', function(data) { //trigger que se activa cuando llega un mensaje de alarma 
+			if(data['alarm']==1 && data['alarm'] != current_sound){ //se activa la alarma solo si no estaba sonando antes
+				current_sound = 1; // como no estaba sonando antes, se modifica la variable que guarda el estado 
+				alarm(); // se hace sonar la alarma
 			}
-			else if(data['alarm'] == 0 && data['alarm'] != current_sound){
-				console.log('desalarmando')
-				current_sound = 0;
-				stop_alarm()
+			else if(data['alarm']==0 && data['alarm'] != current_sound){ // se desactiva la alarma si estaba activa
+				current_sound = 0; //se cambia el estado actual a inactiva
+				stop_alarm() //funcion que detiene la alarma
 			}
     	});
+
 	</script>
 
+
 </head>
-<body style="background-color: gray" >
+<body style="background-color: blue" onload="check_data()">
 	<div class="container">
 		<div style="padding-top: 100px; color:white">
 			<h1>MaskON: Uso correcto de mascarilla</h1>
 		</div>
+
 		<div id="video_stream">
 			<iframe id="video_stream_iframe"
-				title="cam"
-				width="810"
-				height="610"
-				src="http://localhost:8000/cam">
+				title="Video stream"
+				width="300"
+				height="200"
+				src="url_server_deteccion/video_feed">
 			</iframe>
 		</div>
+
+
 	</div>
 </body>
 <footer class="container">
 	<div class="row">
-		<div class="col-1"></div>
-		<div class="col-2"><button type="button" class="btn btn-primary" id="mute_button" onclick="mute_alarm()">Silenciar</button></div>
-		<div class="col-6"></div>
-		<div class="col-2"><button type="button" class="btn btn-primary" onclick="location.href=&quot;{{ url_for('settings') }}&quot;">Configuraciones</button></div>
-		<div class="col-1"></div>
-	</div>
+			<div class="col-1"></div>
+			<div class="col-2"><button type="button" class="btn btn-primary" id="mute_button" onclick="mute_alarm()">Silenciar alarma</button></div>
+			<div class="col-6"></div>
+			<div class="col-2"><button type="button" class="btn btn-primary" onclick="location.href=&quot;{{ url_for('settings') }}&quot;">Configuraciones</button></div>
+			<div class="col-1"></div>
+		</div>
 </footer>
 </html>
