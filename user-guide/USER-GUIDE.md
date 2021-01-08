@@ -1,17 +1,17 @@
 # Manual de usuario
-Este manual de usuario fue creado con la finalidad de facilitar el uso del programa y orientar a nuevos usuarios que deseen saber con detalle como sacar el máximo pontencial del software. Acá usted aprenderá el contenido de cada menú del programa y como puede moverse por ellos, además de un diagrama y un **Demo** para que pueda interactuar con el programa inmediatamente.
+Este manual de usuario fue creado con la finalidad de facilitar el uso del programa y orientar a nuevos usuarios que deseen saber con detalle como sacar el máximo potencial del software. Acá usted aprenderá el contenido de cada menú del programa y como puede moverse por ellos, además de un diagrama y un **Demo** para que pueda interactuar con el programa inmediatamente.
 
 ## Demo
 Si usted desea ver el demo de este proyecto, puede visitar [Demo del proyecto](https://drive.google.com/drive/folders/1Uqnloj1RgeDTE--mkgo7rjpL8jrsFSHX?usp=sharing)
 
 ## Inicio
-En el menu de **Inicio** usted podrá encontrar lo siguiente:
+En el menú de **Inicio** usted podrá encontrar lo siguiente:
 * Silenciar alarma
-* Camaras de video
+* Cámaras de video
 * Configuraciones 
 
 ## Menu Configuraciones
-En el menu de **Configuraciones** usted podrá encontrar lo siguiente:
+En el menú de **Configuraciones** usted podrá encontrar lo siguiente:
 * Volumen alarma
 * Tono de alarma
 * Activar/Desactivar alarma
