@@ -5,7 +5,7 @@ Este manual de usuario fue creado con la finalidad de facilitar el uso del progr
 En este manual usted aprenderá el contenido de cada menú del programa y como puede moverse por ellos, además de un diagrama y un **Demo** para que pueda interactuar con el programa inmediatamente.
 
 ## Demo
-Si usted desea ver el demo de este proyecto, puede visitar [Demo del proyecto](https://matiConcha.co/mafe-entera-capitana-se-lanza-un-freestyle-de-aquellos-md/)
+Si usted desea ver el demo de este proyecto, puede visitar [Demo del proyecto](https://drive.google.com/drive/folders/1Uqnloj1RgeDTE--mkgo7rjpL8jrsFSHX?usp=sharing)
 
 ## Inicio
 En el menu de **Inicio** usted podrá encontrar lo siguiente:
